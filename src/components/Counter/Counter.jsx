@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import Statistics from './Statistics';
+import FeedbackOptions from './FeedbackOptions';
+import Section from './Section';
+import Notification from './Notification';
 import styles from './Counter.module.css';
 
-const FeedbackApp = () => {
+const Counter = () => {
   const [feedbackCount, setFeedbackCount] = useState({
     good: 0,
     neutral: 0,
@@ -31,17 +35,25 @@ const FeedbackApp = () => {
 
   return (
     <div className={styles.container}>
-      <h2>Статистика зворотного зв'язку</h2>
-      <button className={styles.buttonGood} onClick={() => handleFeedback('good')}>Добре</button>
-      <button className={styles.buttonNormal} onClick={() => handleFeedback('neutral')}>Нейтрально</button>
-      <button className={styles.buttonBad} onClick={() => handleFeedback('bad')}>Погано</button>
-      <p>Добре: {feedbackCount.good}</p>
-      <p>Нейтрально: {feedbackCount.neutral}</p>
-      <p>Погано: {feedbackCount.bad}</p>
-      <p>Загальна кількість відгуків: {countTotalFeedback()}</p>
-      <p>Відсоток позитивних відгуків: {countPositiveFeedbackPercentage()}%</p>
+      <Section title="Зворотний зв'язок">
+        <FeedbackOptions options={feedbackCount} onLeaveFeedback={handleFeedback} />
+      </Section>
+
+      <Section title="Статистика">
+        {countTotalFeedback() > 0 ? (
+          <Statistics
+            good={feedbackCount.good}
+            neutral={feedbackCount.neutral}
+            bad={feedbackCount.bad}
+            total={countTotalFeedback()}
+            positivePercentage={countPositiveFeedbackPercentage()}
+          />
+        ) : (
+          <Notification message="There is no feedback" />
+        )}
+      </Section>
     </div>
   );
 };
 
-export default FeedbackApp;
+export default Counter;
